@@ -26,6 +26,7 @@ namespace code_todo_to_taskjuggler
 		private static StreamWriter outfile;
 		private static List<TodoEntry> TodoEntries;
 		private static string[] wrapper;
+		private static int todocount = 0;
 
 
 		private static string[] GetAllFiles(string dir)
@@ -119,6 +120,7 @@ namespace code_todo_to_taskjuggler
 		private static void ProcessFile(string f)
 		{
 			int linecnt = 1;
+
 			string[] lines = System.IO.File.ReadAllLines (f);
 
 			foreach (string line in lines)
@@ -151,6 +153,7 @@ namespace code_todo_to_taskjuggler
 					tde.descr = tempfields [5];
 
 					TodoEntries.Add (tde);
+					todocount++;
 				}
 				linecnt++;
 			}
@@ -158,6 +161,7 @@ namespace code_todo_to_taskjuggler
 
 		private static void ProcessFiles(string[] files)
 		{
+			todocount = 0;
 			DateTime dt = DateTime.Now;
 
 			WriteTaskJugglerTask(0,wrapper,true,false,false);
@@ -174,6 +178,7 @@ namespace code_todo_to_taskjuggler
 				ProcessFile (s);
 			}
 			Console.WriteLine ();
+			Console.WriteLine ("Total number of tasks: " + todocount.ToString());
 			WriteTaskJugglerTask(0,wrapper,false,false,true);
 		}
 
