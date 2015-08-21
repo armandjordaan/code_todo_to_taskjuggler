@@ -25,6 +25,8 @@ namespace code_todo_to_taskjuggler
 	{
 		private static StreamWriter outfile;
 		private static List<TodoEntry> TodoEntries;
+		private static string[] wrapper;
+
 
 		private static string[] GetAllFiles(string dir)
 		{
@@ -54,7 +56,14 @@ namespace code_todo_to_taskjuggler
 				return -1;
 			}
 		}
-
+			
+		private static void emittabs(int level)
+		{
+			for(int i=0; i<level; i++)
+			{
+				outfile.Write("\t");
+			}
+		}
 		/*
 		 * task gps "GPS Firmware" {
 						journalentry 2015-06-19 "GPS critical for two projects now - complete by this weekend" {				
@@ -68,17 +77,34 @@ namespace code_todo_to_taskjuggler
 						complete 0					
 					}				
 		 * */
-		private static void WriteTaskJugglerTask(string[] todofields)
+		private static void WriteTaskJugglerTask(int level, string[] todofields, bool start, bool body, bool end)
 		{
 			String[] arguments = Environment.GetCommandLineArgs();
 
-			outfile.Write     ("task {0} \"{1}\" ",todofields[1],todofields[5].Trim());
-			outfile.WriteLine ("{");
-			outfile.WriteLine ("    priority {0}",arguments[3] + todofields[4]);
-			outfile.WriteLine ("    allocate {0}",todofields[2]);
-			outfile.WriteLine ("    effort {0}h",todofields[3]);
-			outfile.WriteLine ("    complete 0");
-			outfile.WriteLine ("}");
+			if (start)
+			{
+				emittabs (level);
+				outfile.Write ("task {0} \"{1}\" ", todofields [1], todofields [5].Trim ());
+				outfile.WriteLine ("{");
+			}
+
+			if (body)
+			{
+				emittabs (level);
+				outfile.WriteLine ("    priority {0}",arguments[3] + todofields[4]);
+				emittabs (level);
+				outfile.WriteLine ("    allocate {0}",todofields[2]);
+				emittabs (level);
+				outfile.WriteLine ("    effort {0}h",todofields[3]);
+				emittabs (level);
+				outfile.WriteLine ("    complete 0");
+			}
+
+			if (end)
+			{
+				emittabs (level);
+				outfile.WriteLine ("}");
+			}
 		}
 
 		/*
@@ -115,7 +141,7 @@ namespace code_todo_to_taskjuggler
 					Console.Write ("Priority: {0}, ",tempfields[4]);
 					Console.WriteLine(" Descr: {0}",tempfields[5]);
 
-					WriteTaskJugglerTask (tempfields);
+					WriteTaskJugglerTask (1,tempfields,true,true,true);
 
 					TodoEntry tde = new TodoEntry ();
 					tde.name = tempfields [1];
@@ -132,6 +158,15 @@ namespace code_todo_to_taskjuggler
 
 		private static void ProcessFiles(string[] files)
 		{
+			DateTime dt = DateTime.Now;
+
+			WriteTaskJugglerTask(0,wrapper,true,false,false);
+
+			outfile.WriteLine ("\tstart " + 
+				dt.Year.ToString() + "-" + 
+				dt.Month.ToString() + "-" + 
+				dt.Day.ToString());
+
 			Console.WriteLine ("Files to check:");
 			foreach (string s in files)
 			{
@@ -139,6 +174,7 @@ namespace code_todo_to_taskjuggler
 				ProcessFile (s);
 			}
 			Console.WriteLine ();
+			WriteTaskJugglerTask(0,wrapper,false,false,true);
 		}
 
 		private static void CheckDuplicateTaskIds()
@@ -182,13 +218,22 @@ namespace code_todo_to_taskjuggler
 			{
 				ShowArgs (args);
 
+				wrapper = new string[6] {
+					"TODO",
+					args[1],
+					"",
+					"",
+					"",
+					args[1]
+				};
+
 				if (args.GetLength (0) < 3)
 				{
-					Console.WriteLine ("Error: Usage code_todo_to_taksjuggler <source directory> <outfile> <prioritybase>");
+					Console.WriteLine ("Usage code_todo_to_taskjuggler <source directory> <projectname> <prioritybase>");
 					return;
 				}
 
-				outfile = new StreamWriter(args[1]);
+				outfile = new StreamWriter(args[1]+".todo.tji");
 
 				TodoEntries = new List<TodoEntry>(1000);
 
