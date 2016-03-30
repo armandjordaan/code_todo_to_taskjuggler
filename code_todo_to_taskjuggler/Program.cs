@@ -223,6 +223,14 @@ namespace code_todo_to_taskjuggler
 			{
 				ShowArgs (args);
 
+				//Console.WriteLine("code_todo_to_taskjuggler started");
+				if (args.GetLength (0) < 3)
+				{
+					Console.WriteLine ("Usage code_todo_to_taskjuggler <source directory> <projectname> <prioritybase>");
+					return;
+				}
+				//Console.WriteLine("code_todo_to_taskjuggler running");
+
 				wrapper = new string[6] {
 					"TODO",
 					args[1],
@@ -231,13 +239,7 @@ namespace code_todo_to_taskjuggler
 					"",
 					args[1]
 				};
-
-				if (args.GetLength (0) < 3)
-				{
-					Console.WriteLine ("Usage code_todo_to_taskjuggler <source directory> <projectname> <prioritybase>");
-					return;
-				}
-
+					
 				outfile = new StreamWriter(args[1]+".todo.tji");
 
 				TodoEntries = new List<TodoEntry>(1000);

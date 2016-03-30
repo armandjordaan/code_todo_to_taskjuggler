@@ -1,12 +1,14 @@
-﻿<Properties>
+﻿<Properties StartupItem="code_todo_to_taskjuggler.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
     <Files>
-      <File FileName="Program.cs" Line="51" Column="51" />
+      <File FileName="Program.cs" Line="238" Column="9" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/armand/ownCloud/Projects/General/monodevelop/code_todo_to_taskjuggler/code_todo_to_taskjuggler/Program.cs" line="39" column="28" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
