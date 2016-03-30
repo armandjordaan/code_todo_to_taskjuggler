@@ -27,7 +27,7 @@ namespace code_todo_to_taskjuggler
 		private static List<TodoEntry> TodoEntries;
 		private static string[] wrapper;
 		private static int todocount = 0;
-
+		private static bool fVerbose = false;
 
 		private static string[] GetAllFiles(string dir)
 		{
@@ -221,12 +221,37 @@ namespace code_todo_to_taskjuggler
 		{
 			try
 			{
-				ShowArgs (args);
+				bool fHelp = false;
+
+				foreach(string s in args)
+				{
+					if ((s == "--help")  || (s=="-h"))
+					{
+						fHelp = true;
+					}
+					if ((s == "--verbose")  || (s=="-v"))
+					{
+						fVerbose = true;
+					}
+				}
+
+				if (fVerbose) ShowArgs (args);
+
 
 				//Console.WriteLine("code_todo_to_taskjuggler started");
-				if (args.GetLength (0) < 3)
+				if ((args.GetLength (0) < 3) || (fHelp))
 				{
-					Console.WriteLine ("Usage code_todo_to_taskjuggler <source directory> <projectname> <prioritybase>");
+					Console.WriteLine ("");
+					Console.WriteLine ("\tUsage code_todo_to_taskjuggler <source directory> <projectname> <prioritybase> [--verbose]");
+					Console.WriteLine ("");
+					Console.WriteLine ("\tOther options:");
+					Console.WriteLine ("\t\t--verbose or -v : run in verbose mode");
+					Console.WriteLine ("\t\t--help or -h    : display this help");
+					Console.WriteLine ("");
+					Console.WriteLine ("\tFormat for todo comments:");
+					Console.WriteLine ("");
+					Console.WriteLine ("\t\tTODO:<taskname>:<allocated>:<effort>:<priority>:<descr>");
+					Console.WriteLine ("");
 					return;
 				}
 				//Console.WriteLine("code_todo_to_taskjuggler running");
@@ -259,10 +284,19 @@ namespace code_todo_to_taskjuggler
 			catch(Exception ex)
 			{
 				Console.ForegroundColor = ConsoleColor.Red;
-				outfile.Close();
-				Console.WriteLine ("An exception occured");
-				Console.WriteLine (ex.ToString ());
-				Console.ResetColor();
+				outfile.Close ();
+
+				if (fVerbose)
+				{
+					Console.WriteLine ("An exception occured");
+					Console.WriteLine (ex.ToString ());
+				}
+				else
+				{
+					Console.Write ("Problem: ");
+					Console.WriteLine (ex.Message);
+					Console.ResetColor ();
+				}
 			}
 		}
 	}
